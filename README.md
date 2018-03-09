@@ -19,3 +19,9 @@ $ MSG='{"jsonrpc": "2.0", "method": "status", "id": 1}'
 $ curl -H $HDR -d $MSG http://localhost:5000/rpc
 {"jsonrpc":"2.0","result":{"running": false},"id":1}
 ```
+
+### Set up content delivery
+
+Add files to cdn_content directory
+
+Access them at localhost:3000/content/file_name
