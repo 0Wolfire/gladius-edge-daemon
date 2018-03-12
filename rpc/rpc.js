@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 // Create an express app for the RPC Server
 var rpcApp = express();
 
-var staticApp;
+var staticApp; // Placeholder for the static app server
 var staticServer; // Store the server object from app.listen
 var running = false; // Running state of the static content app
 
@@ -35,11 +35,17 @@ var rpcServer = jayson.server({
     callback(null, {
       running: running // Return the current running status
     })
+  },
+  addContent: function(args, callback){
+    // TODO: Add new content to the "__dirname + '/cdn_content/'" folder
+    callback(null, "Added new content")
   }
 });
 
+// Add the RPC endpoint
 rpcApp.post('/rpc', rpcServer.middleware());
 
+// Export a start function
 exports.start = function(app) {
   staticApp = app;
   rpcApp.listen(5000);
