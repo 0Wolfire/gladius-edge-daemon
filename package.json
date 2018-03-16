@@ -23,6 +23,7 @@
   "homepage": "https://github.com/gladiusio/gladius-edge-daemon#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "express": "^4.16.2",
     "jayson": "^2.0.5",
     "npm": "^5.7.1"

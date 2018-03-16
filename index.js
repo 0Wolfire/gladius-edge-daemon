@@ -1,12 +1,12 @@
 var express = require('express');
-var rpcController = require('./rpc/rpc.js')
+var cors = require('cors');
+var rpcController = require('./controller/controller.js')
 
 var staticApp = express(); // Express app to serve static content
+staticApp.use(cors());
 
-staticApp.get('/content/:name', function(req, res) {
-  res.sendFile(req.params.name, {
-    root: __dirname + '/cdn_content/'
-  });
+staticApp.get('/content_bundle/', function(req, res) {
+  return res.json(rpcController.getCDNData());
 });
 
 rpcController.start(staticApp);

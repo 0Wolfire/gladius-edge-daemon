@@ -24,4 +24,4 @@ $ curl -H $HDR -d $MSG http://localhost:5000/rpc
 
 Add files to cdn_content directory
 
-Access them at localhost:3000/content/file_name
+Access them at localhost:8080/content/file_name   
