@@ -72,6 +72,6 @@ exports.start = function(app) {
   rpcApp.listen(5000);
 }
 
-exports.getCDNData = function() {
-  return cdnData;
+exports.getCDNData = function(bundleName) {
+  return cdnData[bundleName];
 }
