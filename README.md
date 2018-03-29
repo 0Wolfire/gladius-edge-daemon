@@ -2,6 +2,12 @@
 
 The edge node daemon to be installed alongside the control daemon.
 
+### Install
+Clone this repo and run `npm install`
+
+### Run
+Run `node index.js` in the project directory
+
 ### Test the RPC server
 
 ```
@@ -22,5 +28,5 @@ $ curl -H $HDR -d $MSG http://localhost:5000/rpc
 
 ### Set up content delivery
 
-Add bundle.json to cdn_content directory (in future releases this will be done 
+Add bundle.json to cdn_content directory (in future releases this will be done
   automatically)
