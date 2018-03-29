@@ -17,3 +17,5 @@ staticApp.get('/status/', function(req, res){
 });
 
 rpcController.start(staticApp);
+
+console.log("Running - Use \"gladius-node start\" to start it");

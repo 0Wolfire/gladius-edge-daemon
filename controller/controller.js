@@ -36,15 +36,16 @@ function reloadData() {
 var rpcServer = jayson.server({
   start: function(args, callback) {
     if (!running) {
+      console.log("Running on http://localhost:8080 - Check status at /status")
       staticServer = staticApp.listen(8080); // Start the app
       running = true;
       callback(null, "Started server");
     } else {
       callback(null, "Server already running");
     }
-
   },
   stop: function(args, callback) {
+    console.log("Stopped running")
     if (staticServer) { // Make sure the server is started
       staticServer.close(); // Stop the app
       running = false;
