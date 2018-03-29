@@ -35,9 +35,14 @@ function reloadData() {
 // Build Jayson (JSON-RPC server)
 var rpcServer = jayson.server({
   start: function(args, callback) {
-    staticServer = staticApp.listen(8080); // Start the app
-    running = true;
-    callback(null, "Started server");
+    if (!running) {
+      staticServer = staticApp.listen(8080); // Start the app
+      running = true;
+      callback(null, "Started server");
+    }else{
+      callback(null, "Server already running");
+    }
+
   },
   stop: function(args, callback) {
     if (staticServer) { // Make sure the server is started
