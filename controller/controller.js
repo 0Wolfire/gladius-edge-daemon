@@ -39,7 +39,7 @@ var rpcServer = jayson.server({
       staticServer = staticApp.listen(8080); // Start the app
       running = true;
       callback(null, "Started server");
-    }else{
+    } else {
       callback(null, "Server already running");
     }
 
