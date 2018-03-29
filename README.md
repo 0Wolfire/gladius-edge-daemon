@@ -28,5 +28,4 @@ $ curl -H $HDR -d $MSG http://localhost:5000/rpc
 
 ### Set up content delivery
 
-Add bundle.json to cdn_content directory (in future releases this will be done
-  automatically)
+bundle.json is included with the package.
