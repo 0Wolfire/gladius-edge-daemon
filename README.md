@@ -3,7 +3,7 @@
 The edge node daemon to be installed alongside the control daemon.
 
 ### Install
-Clone this repo and run `npm install`
+Run `npm install gladius-edge-daemon -g` or clone this repo and run `npm install`
 
 ### Run
 Run `node index.js` in the project directory
