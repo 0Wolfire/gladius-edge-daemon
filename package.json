@@ -11,6 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/gladiusio/gladius-edge-daemon.git"
   },
+  "bin": {
+    "gladius-edge": "./index.js"
+  },
   "keywords": [
     "gladius",
     "node",
