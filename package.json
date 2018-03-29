@@ -1,6 +1,6 @@
 {
   "name": "gladius-edge-daemon",
-  "version": "0.1.1-beta",
+  "version": "0.1.2-beta",
   "description": "Gladius edge node deamon to serve content",
   "main": "index.js",
   "scripts": {
