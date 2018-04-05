@@ -3,13 +3,21 @@
 The edge node daemon to be installed alongside the control daemon.
 
 ### Install
-Run `npm install gladius-edge-daemon -g` or clone this repo and run `npm install`
+Install [go](https://golang.org/doc/install)
+
+Compile and install the main.go file in cmd/gladius-edge-daemon/ with `go isntall cmd/gladius-edge-daemon/main.go`
+
+##### Some untested stuff with services
+Install the service on your machine with: `gladius-edge-daemon install`
+Start with: `gladius-edge-daemon start`
+Stop with: `gladius-edge-daemon stop`
+
 
 ### Run
-Run `node index.js` in the project directory
+Run the executable created by the above step with `gladius-edge-daemon`
+(Or use the steps above and make it a service)
 
-### Test the RPC server
-
+### Test the RPC server (Not implemented yet)
 ```
 $ HDR='Content-type: application/json'
 
