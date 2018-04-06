@@ -36,4 +36,4 @@ $ curl -H $HDR -d $MSG http://localhost:5000/rpc
 
 ### Set up content delivery
 
-bundle.json is included with the package.
+Bundle files will be fetched from the masternode and loaded into RAM
