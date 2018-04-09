@@ -19,18 +19,19 @@ Run the executable created by the above step with `gladius-edge-daemon`
 
 ### Test the RPC server (Not implemented yet)
 ```
-$ HDR='Content-type: application/json'
+$ HDR1='Content-type: application/json'
+$ HDR2='Accept: application/json'
 
 $ MSG='{"jsonrpc": "2.0", "method": "start", "id": 1}'
-$ curl -H $HDR -d $MSG http://localhost:5000/rpc
+$ curl -H $HDR1 -H $HDR2 -d $MSG http://localhost:5000/rpc
 {"jsonrpc":"2.0","result":"Started server","id":1}
 
 $ MSG='{"jsonrpc": "2.0", "method": "stop", "id": 1}'
-$ curl -H $HDR -d $MSG http://localhost:5000/rpc
+$ curl -H $HDR1 -H $HDR2 -d $MSG http://localhost:5000/rpc
 {"jsonrpc":"2.0","result":"Stopped server","id":1}
 
 $ MSG='{"jsonrpc": "2.0", "method": "status", "id": 1}'
-$ curl -H $HDR -d $MSG http://localhost:5000/rpc
+$ curl -H $HDR1 -H $HDR2 -d $MSG http://localhost:5000/rpc
 {"jsonrpc":"2.0","result":{"running": false},"id":1}
 ```
 
