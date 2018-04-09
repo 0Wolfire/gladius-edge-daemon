@@ -3,30 +3,36 @@ package main
 import (
 	"fmt"
 	"gladius-edge-daemon/init/manager"
+	"net"
 	"net/http"
+	"net/rpc"
 
-	"github.com/osamingo/jsonrpc"
+	"github.com/powerman/rpc-codec/jsonrpc2"
 	"github.com/valyala/fasthttp"
 )
 
 var contentChannel, rpcChannel = make(chan string), make(chan string)
 
-type (
-	HandleParamsResulter interface {
-		jsonrpc.Handler
-		Params() interface{}
-		Result() interface{}
-	}
-	UserService struct {
-		SignUpHandler HandleParamsResulter
-		LogInHandler  HandleParamsResulter
-	}
-)
+type GladiusEdge struct {
+	//TODO: Add channel here so all methods have access
+}
 
-func NewUserService() *UserService {
-	return &UserService{
-		// Initialize handlers
-	}
+// Start the gladius edge node
+func (*GladiusEdge) Start(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
+}
+
+// Stop the gladius edge node
+func (*GladiusEdge) Stop(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
+}
+
+// Get the current status of the network node
+func (*GladiusEdge) Status(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
 }
 
 // Create transport types
@@ -59,15 +65,20 @@ func run() {
 	// Create a content server goroutine
 	go fasthttp.ListenAndServe(":8080", requestHandler(contentChannel, rpcData))
 
-	mr := jsonrpc.NewMethodRepository()
-	us := NewUserService()
+	// Register RPC methods
+	rpc.Register(&GladiusEdge{})
 
-	mr.RegisterMethod("UserService.SignUp", us.SignUpHandler, us.SignUpHandler.Params(), us.SignUpHandler.Result())
-	mr.RegisterMethod("UserService.LogIn", us.LoginHandler, us.LoginHandler.Params(), us.LoginHandler.Result())
-
-	go http.ListenAndServe(":5000", http.DefaultServeMux)
+	// Setup HTTP handling for RPC on port 5000
+	http.Handle("/rpc", jsonrpc2.HTTPHandler(nil))
+	lnHTTP, err := net.Listen("tcp", ":5000")
+	if err != nil {
+		panic(err)
+	}
+	defer lnHTTP.Close()
+	go http.Serve(lnHTTP, nil)
 
 	fmt.Println("Started RPC server and HTTP server.")
+
 	// Forever check through the channels on the main thread
 	for {
 		select {
@@ -91,10 +102,6 @@ func requestHandler(contentChannel chan string, rpcData *RPCData) func(ctx *fast
 			ctx.Error("Unsupported path", fasthttp.StatusNotFound)
 		}
 	}
-}
-
-func rpcHandler(rpcChannel chan string, httpData *HTTPData) {
-
 }
 
 func contentHandler(ctx *fasthttp.RequestCtx) {
