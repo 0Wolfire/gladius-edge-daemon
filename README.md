@@ -18,7 +18,7 @@ Run the executable created by the above step with `gladius-edge-daemon`
 (Or use the steps above and make it a service)
 
 ### Test the RPC server (Not implemented yet)
-```
+```bash
 $ HDR1='Content-type: application/json'
 $ HDR2='Accept: application/json'
 
