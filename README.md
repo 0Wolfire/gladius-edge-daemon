@@ -5,7 +5,7 @@ The edge node daemon to be installed alongside the control daemon.
 ### Install
 Install [go](https://golang.org/doc/install)
 
-Compile and install the main.go file in cmd/gladius-edge-daemon/ with `go isntall cmd/gladius-edge-daemon/main.go`
+Compile and install the main.go file in cmd/gladius-edge-daemon/ with `go install cmd/gladius-edge-daemon/main.go`
 
 ##### Some untested stuff with services
 Install the service on your machine with: `gladius-edge-daemon install`
