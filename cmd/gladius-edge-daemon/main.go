@@ -11,30 +11,6 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-var contentChannel, rpcChannel = make(chan string), make(chan string)
-
-type GladiusEdge struct {
-	//TODO: Add channel here so all methods have access
-}
-
-// Start the gladius edge node
-func (*GladiusEdge) Start(vals [2]int, res *string) error {
-	*res = "Not Implemented"
-	return nil
-}
-
-// Stop the gladius edge node
-func (*GladiusEdge) Stop(vals [2]int, res *string) error {
-	*res = "Not Implemented"
-	return nil
-}
-
-// Get the current status of the network node
-func (*GladiusEdge) Status(vals [2]int, res *string) error {
-	*res = "Not Implemented"
-	return nil
-}
-
 // Create transport types
 type RPCData struct {
 }
@@ -42,9 +18,30 @@ type RPCData struct {
 type HTTPData struct {
 }
 
+type GladiusEdge struct {
+	rpcData RPCData
+}
+
+// Start - Start the gladius edge node
+func (*GladiusEdge) Start(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
+}
+
+// Stop - Stop the gladius edge node
+func (*GladiusEdge) Stop(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
+}
+
+// Status - Get the current status of the network node
+func (*GladiusEdge) Status(vals [2]int, res *string) error {
+	*res = "Not Implemented"
+	return nil
+}
+
 // Main entry-point for the service
 func main() {
-
 	// Define some variables
 	name, displayName, description :=
 		"GladiusEdgeDaemon",
@@ -61,6 +58,9 @@ func run() {
 	// Create some strucs so we can pass info between goroutines
 	rpcData := &RPCData{}
 	// httpData := &HTTPData{}
+
+	// Create some channels to communicate out of the threads
+	contentChannel, rpcChannel := make(chan string), make(chan string)
 
 	// Create a content server goroutine
 	go fasthttp.ListenAndServe(":8080", requestHandler(contentChannel, rpcData))
