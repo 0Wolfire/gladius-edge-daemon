@@ -4,12 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"gladius-edge-daemon/internal/rpc-manager"
+	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/rpc"
-	"os"
-	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/powerman/rpc-codec/jsonrpc2"
 	"github.com/valyala/fasthttp"
@@ -18,6 +19,8 @@ import (
 // Run - Start a web server
 func Run() {
 	fmt.Println("Starting...")
+	// Get where the content is stored and load into memory
+
 	// Create some strucs so we can pass info between goroutines
 	rpcOut := &rpcmanager.RPCOut{HTTPState: make(chan bool)}
 	httpOut := &rpcmanager.HTTPOut{}
@@ -71,6 +74,7 @@ func Run() {
 
 func getContentDir() (string, error) {
 	// TODO: Actually get correct filepath
+	// TODO: Add configurable values from a config file
 	switch runtime.GOOS {
 	case "windows":
 		return "/var/lib/gladius/gladius-networkd", nil
@@ -84,13 +88,31 @@ func getContentDir() (string, error) {
 }
 
 // Return a map of the json bundles on disk
-func loadContentFromDisk() {
-	ex, err := os.Executable()
+func loadContentFromDisk() map[string]string {
+	filePath, err := getContentDir()
 	if err != nil {
 		panic(err)
 	}
-	exPath := filepath.Dir(ex)
-	fmt.Println(exPath)
+
+	files, err := ioutil.ReadDir(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	m := make(map[string]string)
+
+	for _, f := range files {
+		name := f.Name()
+		if strings.HasSuffix(name, ".json") {
+			b, err := ioutil.ReadFile("file.txt") // just pass the file name
+			if err != nil {
+				log.Fatal(err)
+			}
+			m[name] = string(b)
+		}
+	}
+
+	return m
 }
 
 // Return a function like the one fasthttp is expecting
