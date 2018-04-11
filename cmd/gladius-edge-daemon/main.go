@@ -13,6 +13,6 @@ func main() {
 		"Gladius Network (Edge) Daemon",
 		"Gladius Network (Edge) Daemon"
 
-	// Run the function "run" as a service
+	// Run the function "run" in newtworkd as a service
 	manager.RunService(name, displayName, description, networkd.Run)
 }
