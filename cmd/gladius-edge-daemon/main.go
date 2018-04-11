@@ -33,7 +33,7 @@ func run() {
 	rpcOut := &rpcmanager.RPCOut{HTTPState: make(chan bool)}
 	httpOut := &rpcmanager.HTTPOut{}
 
-	// Content server stuff below
+	//  -- Content server stuff below --
 
 	// Listen on 8080
 	lnContent, err := net.Listen("tcp", ":8080")
@@ -46,7 +46,7 @@ func run() {
 	defer lnContent.Close()
 	go server.Serve(lnContent)
 
-	// RPC Stuff below
+	// -- RPC Stuff below --
 
 	// Register RPC methods
 	rpc.Register(&rpcmanager.GladiusEdge{RPCOut: rpcOut})
