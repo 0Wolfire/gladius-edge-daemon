@@ -6,6 +6,8 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"os"
+	"path/filepath"
 
 	"github.com/powerman/rpc-codec/jsonrpc2"
 	"github.com/valyala/fasthttp"
@@ -97,7 +99,7 @@ func run() {
 		select {
 		case state := <-(*rpcOut).httpState: // If it can be assigned to a variable
 			if state {
-				lnContent, err := net.Listen("tcp", ":8080")
+				lnContent, err = net.Listen("tcp", ":8080")
 				if err != nil {
 					panic(err)
 				}
@@ -109,6 +111,16 @@ func run() {
 			}
 		}
 	}
+}
+
+// Return a map of the json bundles on disk
+func loadContentFromDisk() {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fmt.Println(exPath)
 }
 
 // Return a function like the one fasthttp is expecting
