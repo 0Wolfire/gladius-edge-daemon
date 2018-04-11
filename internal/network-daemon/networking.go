@@ -9,6 +9,8 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"os"
+	"path"
 	"runtime"
 	"strings"
 
@@ -20,6 +22,7 @@ import (
 func Run() {
 	fmt.Println("Starting...")
 	// Get where the content is stored and load into memory
+	bundleMap := loadContentFromDisk()
 
 	// Create some strucs so we can pass info between goroutines
 	rpcOut := &rpcmanager.RPCOut{HTTPState: make(chan bool)}
@@ -33,7 +36,7 @@ func Run() {
 		panic(err)
 	}
 	// Create a content server
-	server := fasthttp.Server{Handler: requestHandler(httpOut)}
+	server := fasthttp.Server{Handler: requestHandler(httpOut, bundleMap)}
 	// Serve the content
 	defer lnContent.Close()
 	go server.Serve(lnContent)
@@ -79,7 +82,7 @@ func getContentDir() (string, error) {
 	case "windows":
 		return "/var/lib/gladius/gladius-networkd", nil
 	case "linux":
-		return "/var/lib/gladius/gladius-networkd", nil
+		return os.Getenv("HOME") + "/.config/gladius/gladius-networkd", nil
 	case "darwin":
 		return "/var/lib/gladius/gladius-networkd", nil
 	default:
@@ -96,7 +99,7 @@ func loadContentFromDisk() map[string]string {
 
 	files, err := ioutil.ReadDir(filePath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error when reading content dir: ", err)
 	}
 
 	m := make(map[string]string)
@@ -104,11 +107,13 @@ func loadContentFromDisk() map[string]string {
 	for _, f := range files {
 		name := f.Name()
 		if strings.HasSuffix(name, ".json") {
-			b, err := ioutil.ReadFile("file.txt") // just pass the file name
+			b, err := ioutil.ReadFile(path.Join(filePath, name))
+			website := strings.Replace(name, ".json", "", 1)
+			fmt.Println("Loaded content bundle for: " + website)
 			if err != nil {
 				log.Fatal(err)
 			}
-			m[name] = string(b)
+			m[website] = string(b)
 		}
 	}
 
@@ -116,12 +121,12 @@ func loadContentFromDisk() map[string]string {
 }
 
 // Return a function like the one fasthttp is expecting
-func requestHandler(httpOut *rpcmanager.HTTPOut) func(ctx *fasthttp.RequestCtx) {
+func requestHandler(httpOut *rpcmanager.HTTPOut, bundleMap map[string]string) func(ctx *fasthttp.RequestCtx) {
 	// The actual serving function
 	return func(ctx *fasthttp.RequestCtx) {
 		switch string(ctx.Path()) {
 		case "/content":
-			contentHandler(ctx)
+			contentHandler(ctx, bundleMap)
 			// TODO: Write stuff to pass back to httpOut
 		default:
 			ctx.Error("Unsupported path", fasthttp.StatusNotFound)
@@ -129,10 +134,9 @@ func requestHandler(httpOut *rpcmanager.HTTPOut) func(ctx *fasthttp.RequestCtx) 
 	}
 }
 
-func contentHandler(ctx *fasthttp.RequestCtx) {
+func contentHandler(ctx *fasthttp.RequestCtx, bundleMap map[string]string) {
 	// URL format like /content?website=REQUESTED_SITE
 	website := string(ctx.QueryArgs().Peek("website"))
-
-	// // TODO: Make this serve the appropriate JSON
-	fmt.Fprintf(ctx, "Hi there! You asked for %q", website)
+	// TODO: Verify the website exists on the filesystem
+	fmt.Fprintf(ctx, bundleMap[website])
 }
