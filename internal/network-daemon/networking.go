@@ -1,6 +1,7 @@
 package networkd
 
 import (
+	"errors"
 	"fmt"
 	"gladius-edge-daemon/internal/rpc-manager"
 	"net"
@@ -8,6 +9,7 @@ import (
 	"net/rpc"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/powerman/rpc-codec/jsonrpc2"
 	"github.com/valyala/fasthttp"
@@ -64,6 +66,20 @@ func Run() {
 				fmt.Println("Stopped HTTP server (from RPC command)")
 			}
 		}
+	}
+}
+
+func getContentDir() (string, error) {
+	// TODO: Actually get correct filepath
+	switch runtime.GOOS {
+	case "windows":
+		return "/var/lib/gladius/gladius-networkd", nil
+	case "linux":
+		return "/var/lib/gladius/gladius-networkd", nil
+	case "darwin":
+		return "/var/lib/gladius/gladius-networkd", nil
+	default:
+		return "", errors.New("Could not detect operating system")
 	}
 }
 
