@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gladius-edge-daemon/init/manager"
+	"gladius-edge-daemon/init/service-manager"
 	"gladius-edge-daemon/internal/rpc-manager"
 	"net"
 	"net/http"
