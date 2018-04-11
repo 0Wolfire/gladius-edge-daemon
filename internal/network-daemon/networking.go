@@ -58,10 +58,10 @@ func Run() {
 					panic(err)
 				}
 				go server.Serve(lnContent)
-				fmt.Println("Started")
+				fmt.Println("Started HTTP server (from RPC command)")
 			} else {
 				lnContent.Close()
-				fmt.Println("Stopped")
+				fmt.Println("Stopped HTTP server (from RPC command)")
 			}
 		}
 	}
