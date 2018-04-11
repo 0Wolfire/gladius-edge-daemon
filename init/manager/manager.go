@@ -1,5 +1,5 @@
 /*
-Creates the service
+Package manager - Creates the service
 */
 package manager
 
@@ -19,7 +19,7 @@ type program struct {
 	exec func()
 }
 
-// Main entry-point for the service
+// RunService - Main entry-point for the service
 func RunService(name string, displayName string, description string, run func()) {
 	// Define the service configuration.
 	svcConfig := &service.Config{

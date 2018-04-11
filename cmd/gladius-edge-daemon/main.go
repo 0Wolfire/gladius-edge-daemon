@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gladius-edge-daemon/init/manager"
+	"gladius-edge-daemon/internal/rpc-manager"
 	"net"
 	"net/http"
 	"net/rpc"
@@ -12,40 +13,6 @@ import (
 	"github.com/powerman/rpc-codec/jsonrpc2"
 	"github.com/valyala/fasthttp"
 )
-
-// RPCOut - Transport struct
-type RPCOut struct {
-	httpState chan bool
-}
-
-// HTTPOut - Transport struct
-type HTTPOut struct {
-}
-
-// GladiusEdge - Entry for the RPC interface. Methods take the form GladiusEdge.Method
-type GladiusEdge struct {
-	rpcOut *RPCOut
-}
-
-// Start - Start the gladius edge node
-func (g *GladiusEdge) Start(vals [2]int, res *string) error {
-	g.rpcOut.httpState <- true
-	*res = "Started the server"
-	return nil
-}
-
-// Stop - Stop the gladius edge node
-func (g *GladiusEdge) Stop(vals [2]int, res *string) error {
-	g.rpcOut.httpState <- false
-	*res = "Stopped the server"
-	return nil
-}
-
-// Status - Get the current status of the network node
-func (g *GladiusEdge) Status(vals [2]int, res *string) error {
-	*res = "Not Implemented"
-	return nil
-}
 
 // Main entry-point for the service
 func main() {
@@ -63,8 +30,8 @@ func main() {
 func run() {
 	fmt.Println("Starting...")
 	// Create some strucs so we can pass info between goroutines
-	rpcOut := &RPCOut{make(chan bool)}
-	httpOut := &HTTPOut{}
+	rpcOut := &rpcmanager.RPCOut{HTTPState: make(chan bool)}
+	httpOut := &rpcmanager.HTTPOut{}
 
 	// Content server stuff below
 
@@ -82,7 +49,7 @@ func run() {
 	// RPC Stuff below
 
 	// Register RPC methods
-	rpc.Register(&GladiusEdge{rpcOut: rpcOut})
+	rpc.Register(&rpcmanager.GladiusEdge{RPCOut: rpcOut})
 	// Setup HTTP handling for RPC on port 5000
 	http.Handle("/rpc", jsonrpc2.HTTPHandler(nil))
 	lnHTTP, err := net.Listen("tcp", ":5000")
@@ -97,7 +64,7 @@ func run() {
 	// Forever check through the channels on the main thread
 	for {
 		select {
-		case state := <-(*rpcOut).httpState: // If it can be assigned to a variable
+		case state := <-(*rpcOut).HTTPState: // If it can be assigned to a variable
 			if state {
 				lnContent, err = net.Listen("tcp", ":8080")
 				if err != nil {
@@ -124,7 +91,7 @@ func loadContentFromDisk() {
 }
 
 // Return a function like the one fasthttp is expecting
-func requestHandler(httpOut *HTTPOut) func(ctx *fasthttp.RequestCtx) {
+func requestHandler(httpOut *rpcmanager.HTTPOut) func(ctx *fasthttp.RequestCtx) {
 	// The actual serving function
 	return func(ctx *fasthttp.RequestCtx) {
 		switch string(ctx.Path()) {
